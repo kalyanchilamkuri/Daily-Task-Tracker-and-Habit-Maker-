@@ -8,6 +8,7 @@ import { TaskModal } from './components/TaskModal';
 import { NotificationModal } from './components/NotificationModal';
 import { AuthModal } from './components/AuthModal';
 import { ImportExportModal } from './components/ImportExportModal';
+import { ReplicateModal } from './components/ReplicateModal';
 import { ThreeCanvas } from './components/ThreeCanvas';
 import { StorageService } from './services/storage';
 import { Task, UserProfile, ViewMode } from './types';
@@ -28,6 +29,8 @@ export const App: React.FC = () => {
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isImportExportOpen, setIsImportExportOpen] = useState(false);
+  const [isReplicateModalOpen, setIsReplicateModalOpen] = useState(false);
+  const [replicateSourceDate, setReplicateSourceDate] = useState<string | undefined>(undefined);
 
   // Toast feedback
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -177,6 +180,46 @@ export const App: React.FC = () => {
     setIsTaskModalOpen(true);
   }, []);
 
+  // Duplicate a single task to tomorrow (or today if overdue)
+  const handleDuplicateSingleTask = useCallback((task: Task) => {
+    const today = new Date();
+    const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+    const tomorrowStr = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
+
+    const duplicated: Task = {
+      ...task,
+      id: `task-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+      dueDate: tomorrowStr,
+      completed: false,
+      completedAt: undefined,
+      createdAt: new Date().toISOString(),
+      subtasks: task.subtasks?.map((s) => ({
+        ...s,
+        id: `sub-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+        completed: false,
+      })) || [],
+    };
+
+    setTasks((prev) => {
+      const updated = [duplicated, ...prev];
+      StorageService.saveTasks(updated);
+      return updated;
+    });
+    sound.playCreate();
+    showToast(`Replicated "${task.title.slice(0, 24)}..." for tomorrow!`);
+  }, [showToast]);
+
+  // Batch replicate tasks
+  const handleReplicateBatch = useCallback((newTasks: Task[]) => {
+    setTasks((prev) => {
+      const updated = [...newTasks, ...prev];
+      StorageService.saveTasks(updated);
+      return updated;
+    });
+    sound.playCreate();
+    showToast(`Replicated ${newTasks.length} routine tasks successfully!`);
+  }, [showToast]);
+
   // Import tasks
   const handleImportTasks = useCallback((imported: Task[], mode: 'merge' | 'replace') => {
     if (mode === 'replace') {
@@ -211,6 +254,15 @@ export const App: React.FC = () => {
     showToast('Profile updated');
   }, [showToast]);
 
+  // Handle user authentication change (login / signup / logout)
+  const handleUserAuthChange = useCallback((newUser: UserProfile) => {
+    setCurrentUser(newUser);
+    const userTasks = StorageService.getTasks(newUser.id);
+    setTasks(userTasks);
+    sound.setEnabled(newUser.soundEnabled);
+    StorageService.saveUser(newUser);
+  }, []);
+
   // Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -220,6 +272,7 @@ export const App: React.FC = () => {
         setIsNotificationModalOpen(false);
         setIsAuthModalOpen(false);
         setIsImportExportOpen(false);
+        setIsReplicateModalOpen(false);
       }
       // Ctrl + K to focus search
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -243,7 +296,7 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#070b14] text-slate-100 flex flex-col selection:bg-indigo-500 selection:text-white">
+    <div className="relative min-h-screen bg-[#070b09] text-slate-100 flex flex-col selection:bg-emerald-500 selection:text-slate-950">
       {/* Interactive 3D WebGL Canvas Layer */}
       {show3D && <ThreeCanvas pulseTrigger={pulseCount} />}
 
@@ -286,6 +339,11 @@ export const App: React.FC = () => {
                 setIsTaskModalOpen(true);
               }}
               searchQuery={searchQuery}
+              onOpenReplicateModal={() => {
+                setReplicateSourceDate(undefined);
+                setIsReplicateModalOpen(true);
+              }}
+              onDuplicateTask={handleDuplicateSingleTask}
             />
           )}
 
@@ -297,6 +355,11 @@ export const App: React.FC = () => {
               onDelete={handleDeleteTask}
               onToggleSubtask={handleToggleSubtask}
               onAddTaskOnDate={handleAddTaskOnDate}
+              onOpenReplicateModal={(dateStr) => {
+                setReplicateSourceDate(dateStr);
+                setIsReplicateModalOpen(true);
+              }}
+              onDuplicateTask={handleDuplicateSingleTask}
             />
           )}
 
@@ -352,6 +415,7 @@ export const App: React.FC = () => {
         onClose={() => setIsAuthModalOpen(false)}
         currentUser={currentUser}
         onUpdateUser={handleUpdateUser}
+        onUserAuthChange={handleUserAuthChange}
       />
 
       <ImportExportModal
@@ -359,6 +423,14 @@ export const App: React.FC = () => {
         onClose={() => setIsImportExportOpen(false)}
         tasks={tasks}
         onImportTasks={handleImportTasks}
+      />
+
+      <ReplicateModal
+        isOpen={isReplicateModalOpen}
+        onClose={() => setIsReplicateModalOpen(false)}
+        tasks={tasks}
+        onReplicateTasks={handleReplicateBatch}
+        initialSourceDate={replicateSourceDate}
       />
 
       {/* Floating Toast Notification */}
