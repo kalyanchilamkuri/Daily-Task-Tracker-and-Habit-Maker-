@@ -17,7 +17,7 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ pulseTrigger = 0 }) =>
 
     // Scene, Camera, Renderer
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x090d16, 0.035);
+    scene.fog = new THREE.FogExp2(0x070b09, 0.032);
 
     const camera = new THREE.PerspectiveCamera(
       60,
@@ -41,18 +41,18 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ pulseTrigger = 0 }) =>
     const mainGroup = new THREE.Group();
     scene.add(mainGroup);
 
-    // 1. Central holographic core (Icosahedron + Wireframe cage)
+    // 1. Central Emerald Core (Icosahedron + Wireframe cage)
     const coreGeo = new THREE.IcosahedronGeometry(3.2, 1);
     const coreMat = new THREE.MeshPhysicalMaterial({
-      color: 0x6366f1,
-      emissive: 0x4f46e5,
-      emissiveIntensity: 0.35,
-      roughness: 0.1,
-      metalness: 0.1,
-      transmission: 0.6,
+      color: 0x10b981, // Emerald
+      emissive: 0x047857,
+      emissiveIntensity: 0.45,
+      roughness: 0.12,
+      metalness: 0.15,
+      transmission: 0.65,
       ior: 1.5,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.9,
     });
     const coreMesh = new THREE.Mesh(coreGeo, coreMat);
     mainGroup.add(coreMesh);
@@ -60,26 +60,31 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ pulseTrigger = 0 }) =>
     // Outer wireframe cage
     const wireGeo = new THREE.IcosahedronGeometry(3.9, 1);
     const wireMat = new THREE.MeshBasicMaterial({
-      color: 0x00f2fe,
+      color: 0x34d399, // Mint
       wireframe: true,
       transparent: true,
-      opacity: 0.25,
+      opacity: 0.28,
     });
     const wireMesh = new THREE.Mesh(wireGeo, wireMat);
     mainGroup.add(wireMesh);
 
-    // 2. Glowing Rings
+    // 2. Glowing Rings (Warm Gold & Mint)
     const ringGeo = new THREE.TorusGeometry(5.2, 0.05, 16, 100);
     const ringMat = new THREE.MeshBasicMaterial({
-      color: 0xa855f7,
+      color: 0xf59e0b, // Warm Gold
       transparent: true,
-      opacity: 0.4,
+      opacity: 0.45,
     });
     const ringMesh1 = new THREE.Mesh(ringGeo, ringMat);
     ringMesh1.rotation.x = Math.PI / 3;
     mainGroup.add(ringMesh1);
 
-    const ringMesh2 = new THREE.Mesh(ringGeo, ringMat);
+    const ringMat2 = new THREE.MeshBasicMaterial({
+      color: 0x10b981,
+      transparent: true,
+      opacity: 0.35,
+    });
+    const ringMesh2 = new THREE.Mesh(ringGeo, ringMat2);
     ringMesh2.rotation.y = Math.PI / 4;
     ringMesh2.rotation.x = -Math.PI / 5;
     mainGroup.add(ringMesh2);
@@ -94,14 +99,14 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ pulseTrigger = 0 }) =>
       new THREE.BoxGeometry(1, 1, 1),
       new THREE.OctahedronGeometry(0.75),
     ];
-    const nodeColors = [0x00f2fe, 0xf72585, 0x4ade80, 0xfbbf24, 0x818cf8];
+    const nodeColors = [0x34d399, 0xf59e0b, 0x10b981, 0xfbbf24, 0x6ee7b7];
 
     const nodes: THREE.Mesh[] = [];
     for (let i = 0; i < nodeCount; i++) {
       const mat = new THREE.MeshStandardMaterial({
         color: nodeColors[i],
         emissive: nodeColors[i],
-        emissiveIntensity: 0.4,
+        emissiveIntensity: 0.45,
         roughness: 0.2,
         metalness: 0.8,
       });
@@ -125,14 +130,14 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ pulseTrigger = 0 }) =>
     }
     mainGroup.add(nodeGroup);
 
-    // 4. Background Starfield / Particle Cloud
+    // 4. Background Starfield / Particle Cloud (Emerald & Mint)
     const particleCount = 450;
     const particleGeo = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    const baseColor = new THREE.Color(0x818cf8);
-    const accentColor = new THREE.Color(0x00f2fe);
+    const baseColor = new THREE.Color(0x10b981);
+    const accentColor = new THREE.Color(0x34d399);
 
     for (let i = 0; i < particleCount; i++) {
       const i3 = i * 3;
@@ -164,15 +169,15 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ pulseTrigger = 0 }) =>
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
     scene.add(ambientLight);
 
-    const pointLight1 = new THREE.PointLight(0x6366f1, 3.5, 30);
+    const pointLight1 = new THREE.PointLight(0x10b981, 3.5, 30);
     pointLight1.position.set(10, 10, 10);
     scene.add(pointLight1);
 
-    const pointLight2 = new THREE.PointLight(0x00f2fe, 3, 30);
+    const pointLight2 = new THREE.PointLight(0x34d399, 3, 30);
     pointLight2.position.set(-10, -8, 8);
     scene.add(pointLight2);
 
-    const pointLight3 = new THREE.PointLight(0xf72585, 2.5, 25);
+    const pointLight3 = new THREE.PointLight(0xf59e0b, 2.5, 25);
     pointLight3.position.set(0, 12, -8);
     scene.add(pointLight3);
 
@@ -215,11 +220,11 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ pulseTrigger = 0 }) =>
       // Check if task completed pulse was fired
       if (pulseRef.current !== lastSeenTrigger) {
         lastSeenTrigger = pulseRef.current;
-        pulseEnergy = 1.0; // full burst
+        pulseEnergy = 1.0;
       }
 
       if (pulseEnergy > 0.005) {
-        pulseEnergy *= 0.94; // decay
+        pulseEnergy *= 0.94;
       } else {
         pulseEnergy = 0;
       }
@@ -279,6 +284,7 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ pulseTrigger = 0 }) =>
       wireMat.dispose();
       ringGeo.dispose();
       ringMat.dispose();
+      ringMat2.dispose();
       particleGeo.dispose();
       particleMat.dispose();
     };
