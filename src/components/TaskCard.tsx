@@ -4,6 +4,7 @@ import {
   Clock, 
   Trash2, 
   Edit3, 
+  Copy, 
   ChevronDown, 
   ChevronUp, 
   AlertCircle, 
@@ -22,6 +23,7 @@ interface TaskCardProps {
   onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
   onToggleSubtask: (taskId: string, subtaskId: string) => void;
+  onDuplicate?: (task: Task) => void;
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({
@@ -30,6 +32,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onEdit,
   onDelete,
   onToggleSubtask,
+  onDuplicate,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -98,13 +101,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       label: 'High',
     },
     medium: {
-      bg: 'bg-indigo-500/15 border-indigo-500/40 text-indigo-400 glow-medium',
-      dot: 'bg-indigo-400 shadow-indigo-500/50',
+      bg: 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400 glow-medium',
+      dot: 'bg-emerald-400 shadow-emerald-500/50',
       label: 'Medium',
     },
     low: {
-      bg: 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400 glow-low',
-      dot: 'bg-emerald-400 shadow-emerald-500/50',
+      bg: 'bg-teal-500/15 border-teal-500/40 text-teal-300 glow-low',
+      dot: 'bg-teal-400 shadow-teal-500/50',
       label: 'Low',
     },
   }[task.priority];
@@ -137,7 +140,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           ? 'bg-slate-900/40 border border-slate-800/80 opacity-75'
           : isOverdue
           ? 'bg-gradient-to-br from-rose-950/30 via-slate-900/80 to-slate-900/90 border border-rose-500/40 shadow-lg shadow-rose-950/30'
-          : 'bg-slate-900/75 border border-slate-700/50 hover:border-indigo-500/50 shadow-xl shadow-black/40 hover:shadow-indigo-500/10'
+          : 'bg-slate-900/75 border border-slate-700/50 hover:border-emerald-500/50 shadow-xl shadow-black/40 hover:shadow-emerald-500/10'
       }`}
     >
       {/* 3D Inner Layer */}
@@ -164,12 +167,24 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
           {/* Quick Action Buttons */}
           <div className="flex items-center space-x-1 opacity-80 group-hover:opacity-100 transition-opacity">
+            {onDuplicate && (
+              <button
+                onClick={() => {
+                  sound.playClick();
+                  onDuplicate(task);
+                }}
+                className="p-1.5 text-slate-400 hover:text-emerald-300 hover:bg-emerald-500/15 rounded-lg transition-all"
+                title="Duplicate / Replicate Task"
+              >
+                <Copy className="w-4 h-4" />
+              </button>
+            )}
             <button
               onClick={() => {
                 sound.playClick();
                 onEdit(task);
               }}
-              className="p-1.5 text-slate-400 hover:text-indigo-300 hover:bg-indigo-500/15 rounded-lg transition-all"
+              className="p-1.5 text-slate-400 hover:text-emerald-300 hover:bg-emerald-500/15 rounded-lg transition-all"
               title="Edit Task"
             >
               <Edit3 className="w-4 h-4" />
@@ -193,8 +208,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             onClick={handleCheckboxClick}
             className={`mt-1 flex-shrink-0 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-300 ${
               task.completed
-                ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-600/40 scale-105'
-                : 'border-slate-500 hover:border-indigo-400 hover:bg-indigo-500/10'
+                ? 'bg-emerald-500 border-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/40 scale-105 font-bold'
+                : 'border-slate-500 hover:border-emerald-400 hover:bg-emerald-500/10'
             }`}
             aria-label={task.completed ? 'Mark incomplete' : 'Mark complete'}
           >
@@ -206,7 +221,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               className={`text-base font-semibold transition-all duration-200 leading-snug break-words ${
                 task.completed
                   ? 'line-through text-slate-400'
-                  : 'text-slate-100 group-hover:text-indigo-200'
+                  : 'text-slate-100 group-hover:text-emerald-200'
               }`}
             >
               {task.title}
@@ -260,7 +275,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             {/* Progress bar */}
             <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1">
               <div
-                className="bg-gradient-to-r from-indigo-500 to-cyan-400 h-full rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-300"
                 style={{ width: `${subtaskPercentage}%` }}
               />
             </div>
@@ -282,7 +297,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                       type="checkbox"
                       checked={sub.completed}
                       onChange={() => {}}
-                      className="rounded border-slate-600 text-indigo-600 focus:ring-0 focus:ring-offset-0 bg-slate-900 cursor-pointer"
+                      className="rounded border-slate-600 text-emerald-500 focus:ring-0 focus:ring-offset-0 bg-slate-900 cursor-pointer"
                     />
                     <span className={sub.completed ? 'line-through text-slate-500' : ''}>
                       {sub.title}
