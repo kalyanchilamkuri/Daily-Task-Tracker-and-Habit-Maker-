@@ -9,7 +9,9 @@ import {
   AlertCircle, 
   Search, 
   Plus, 
-  Zap 
+  Zap, 
+  Repeat, 
+  Copy 
 } from 'lucide-react';
 import { Task, Category, Priority, FilterOptions } from '../types';
 import { TaskCard } from './TaskCard';
@@ -24,6 +26,8 @@ interface DashboardViewProps {
   onToggleSubtask: (taskId: string, subtaskId: string) => void;
   onOpenNewTask: () => void;
   searchQuery: string;
+  onOpenReplicateModal: () => void;
+  onDuplicateTask: (task: Task) => void;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -34,6 +38,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onToggleSubtask,
   onOpenNewTask,
   searchQuery,
+  onOpenReplicateModal,
+  onDuplicateTask,
 }) => {
   const todayStr = getTodayStr();
 
@@ -109,52 +115,66 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Today's Focus Hero Card */}
-      <div className="glass-panel rounded-3xl p-6 sm:p-7 border border-indigo-500/30 bg-gradient-to-r from-indigo-950/40 via-slate-900/90 to-cyan-950/30 shadow-2xl relative overflow-hidden">
+      <div className="glass-panel rounded-3xl p-6 sm:p-7 border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-[#0a120e] to-teal-950/30 shadow-2xl relative overflow-hidden">
         {/* Glow backdrop decorative orb */}
-        <div className="absolute top-0 right-1/4 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="flex items-center space-x-2 text-xs font-mono font-semibold text-cyan-400 uppercase tracking-wider">
+            <div className="flex items-center space-x-2 text-xs font-mono font-semibold text-emerald-400 uppercase tracking-wider">
               <Zap className="w-3.5 h-3.5" />
               <span>Daily Focus • {formatReadableDate(todayStr)}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Transform Ideas Into Action
+              Transform Daily Habits Into Greatness
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 max-w-xl">
-              You have <span className="text-indigo-300 font-semibold">{todayTotal - todayCompleted} tasks pending</span> for today. Keep up the high productivity!
+              You have <span className="text-emerald-300 font-semibold">{todayTotal - todayCompleted} tasks pending</span> for today. Keep your streak alive!
             </p>
           </div>
 
-          {/* Quick Progress Indicator */}
-          <div className="flex items-center space-x-4 bg-slate-900/80 p-4 rounded-2xl border border-slate-800 shadow-inner flex-shrink-0">
-            <div className="relative w-14 h-14 flex items-center justify-center">
-              <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                <path
-                  className="text-slate-800"
-                  strokeWidth="3.5"
-                  stroke="currentColor"
-                  fill="none"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-                <path
-                  className="text-cyan-400"
-                  strokeDasharray={`${todayProgress}, 100`}
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  stroke="currentColor"
-                  fill="none"
-                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-              </svg>
-              <span className="absolute text-xs font-extrabold text-cyan-300">{todayProgress}%</span>
-            </div>
-            <div>
-              <span className="text-xs font-semibold text-white">Today's Pace</span>
-              <p className="text-[11px] text-slate-400">
-                {todayCompleted} of {todayTotal} completed
-              </p>
+          {/* Quick Progress Indicator & Replicate Routine */}
+          <div className="flex flex-wrap items-center gap-3 flex-shrink-0">
+            <button
+              onClick={() => {
+                sound.playClick();
+                onOpenReplicateModal();
+              }}
+              className="px-4 py-3 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 hover:text-white font-semibold text-xs flex items-center space-x-2 transition-all shadow-lg shadow-emerald-500/10 hover:scale-105 active:scale-95"
+              title="Copy today's tasks or daily routine to tomorrow or upcoming days"
+            >
+              <Repeat className="w-4 h-4 text-emerald-400" />
+              <span>Replicate Routine</span>
+            </button>
+
+            <div className="flex items-center space-x-4 bg-[#0a120e]/90 p-3.5 rounded-2xl border border-emerald-950/80 shadow-inner">
+              <div className="relative w-14 h-14 flex items-center justify-center">
+                <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="text-slate-800"
+                    strokeWidth="3.5"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    className="text-emerald-400"
+                    strokeDasharray={`${todayProgress}, 100`}
+                    strokeWidth="3.5"
+                    strokeLinecap="round"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <span className="absolute text-xs font-extrabold text-emerald-300">{todayProgress}%</span>
+              </div>
+              <div>
+                <span className="text-xs font-semibold text-white">Today's Pace</span>
+                <p className="text-[11px] text-slate-400">
+                  {todayCompleted} of {todayTotal} completed
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -181,7 +201,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   }}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-2 ${
                     isSelected
-                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                      ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/30'
                       : 'bg-slate-900/60 text-slate-400 hover:text-slate-200 border border-slate-800'
                   }`}
                 >
@@ -189,7 +209,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <span
                     className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
                       isSelected
-                        ? 'bg-indigo-950 text-indigo-200'
+                        ? 'bg-emerald-950 text-emerald-200'
                         : tab.id === 'overdue' && tab.count > 0
                         ? 'bg-rose-500/20 text-rose-300 font-bold'
                         : 'bg-slate-800 text-slate-400'
@@ -237,7 +257,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 }}
                 className={`px-2.5 py-1 rounded-lg capitalize transition-colors ${
                   filterCategory === cat
-                    ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-semibold'
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
                 }`}
               >
@@ -260,7 +280,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 }}
                 className={`px-2.5 py-1 rounded-lg capitalize transition-colors ${
                   filterPriority === p
-                    ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-semibold'
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
                 }`}
               >
@@ -306,6 +326,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               onEdit={onEdit}
               onDelete={onDelete}
               onToggleSubtask={onToggleSubtask}
+              onDuplicate={onDuplicateTask}
             />
           ))}
         </div>
