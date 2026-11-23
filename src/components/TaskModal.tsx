@@ -34,8 +34,8 @@ const CATEGORIES: { value: Category; label: string; color: string }[] = [
 const PRIORITIES: { value: Priority; label: string; desc: string; color: string; border: string }[] = [
   { value: 'urgent', label: 'Urgent', desc: 'Critical deadline', color: 'text-rose-400 bg-rose-500/10', border: 'border-rose-500/50' },
   { value: 'high', label: 'High', desc: 'Important priority', color: 'text-amber-400 bg-amber-500/10', border: 'border-amber-500/50' },
-  { value: 'medium', label: 'Medium', desc: 'Normal pacing', color: 'text-indigo-400 bg-indigo-500/10', border: 'border-indigo-500/50' },
-  { value: 'low', label: 'Low', desc: 'When time permits', color: 'text-emerald-400 bg-emerald-500/10', border: 'border-emerald-500/50' },
+  { value: 'medium', label: 'Medium', desc: 'Normal pacing', color: 'text-emerald-400 bg-emerald-500/10', border: 'border-emerald-500/50' },
+  { value: 'low', label: 'Low', desc: 'When time permits', color: 'text-teal-400 bg-teal-500/10', border: 'border-teal-500/50' },
 ];
 
 export const TaskModal: React.FC<TaskModalProps> = ({
@@ -154,11 +154,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between pb-5 border-b border-slate-800">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-              <Sparkles className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-emerald-500/20">
+              <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-bold bg-gradient-to-r from-white via-indigo-100 to-cyan-300 bg-clip-text text-transparent">
+              <h2 className="text-xl font-bold bg-gradient-to-r from-white via-emerald-100 to-teal-300 bg-clip-text text-transparent">
                 {taskToEdit ? 'Edit Task' : 'Create New Task'}
               </h2>
               <p className="text-xs text-slate-400">
@@ -415,7 +415,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white text-sm font-semibold shadow-lg shadow-indigo-600/30 hover:shadow-indigo-500/40 transition-all"
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 text-sm font-extrabold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all"
             >
               {taskToEdit ? 'Save Changes' : 'Create Task'}
             </button>
