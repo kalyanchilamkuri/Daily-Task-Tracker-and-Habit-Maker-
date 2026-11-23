@@ -5,7 +5,9 @@ import {
   Plus, 
   CheckCircle2, 
   Clock, 
-  Filter 
+  Filter, 
+  Repeat, 
+  Copy 
 } from 'lucide-react';
 import { Task } from '../types';
 import { 
@@ -25,6 +27,8 @@ interface CalendarViewProps {
   onDelete: (taskId: string) => void;
   onToggleSubtask: (taskId: string, subtaskId: string) => void;
   onAddTaskOnDate: (dateStr: string) => void;
+  onOpenReplicateModal?: (dateStr: string) => void;
+  onDuplicateTask?: (task: Task) => void;
 }
 
 export const CalendarView: React.FC<CalendarViewProps> = ({
@@ -34,6 +38,8 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   onDelete,
   onToggleSubtask,
   onAddTaskOnDate,
+  onOpenReplicateModal,
+  onDuplicateTask,
 }) => {
   const todayStr = getTodayStr();
   const [todayYear, todayMonth] = todayStr.split('-').map(Number);
@@ -101,13 +107,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
       {/* Calendar Header Controls */}
       <div className="glass-panel rounded-3xl p-5 sm:p-6 border border-slate-800 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold text-lg">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-lg">
             {currentMonth + 1}
           </div>
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center space-x-2">
               <span>{MONTH_NAMES[currentMonth]}</span>
-              <span className="text-indigo-400 font-light">{currentYear}</span>
+              <span className="text-emerald-400 font-light">{currentYear}</span>
             </h2>
             <p className="text-xs text-slate-400">
               {monthTasks.length} tasks scheduled ({monthCompletedCount} completed)
@@ -149,7 +155,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               sound.playClick();
               onAddTaskOnDate(selectedDate);
             }}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white flex items-center space-x-1.5 shadow-lg shadow-indigo-600/30 transition-all"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold flex items-center space-x-1.5 shadow-lg shadow-emerald-600/30 transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>Add on {selectedDate === todayStr ? 'Today' : selectedDate.slice(5)}</span>
@@ -190,7 +196,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   }}
                   className={`group min-h-[82px] sm:min-h-[96px] p-2 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between relative ${
                     isSelected
-                      ? 'bg-indigo-950/40 border-indigo-500 shadow-lg shadow-indigo-600/20 ring-1 ring-indigo-500'
+                      ? 'bg-emerald-950/50 border-emerald-500 shadow-lg shadow-emerald-600/20 ring-1 ring-emerald-500'
                       : cell.isToday
                       ? 'bg-slate-800/80 border-amber-500/50 shadow-md shadow-amber-500/10'
                       : cell.isCurrentMonth
@@ -205,7 +211,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                         cell.isToday
                           ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30'
                           : isSelected
-                          ? 'bg-indigo-600 text-white'
+                          ? 'bg-emerald-500 text-slate-950 font-bold'
                           : 'text-slate-300'
                       }`}
                     >
@@ -263,23 +269,37 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         <div className="lg:col-span-4 glass-panel rounded-3xl p-5 sm:p-6 border border-slate-800 shadow-xl flex flex-col">
           <div className="flex items-center justify-between pb-4 border-b border-slate-800">
             <div>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-indigo-400 font-mono">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400 font-mono">
                 {selectedDate === todayStr ? 'Today\'s Agenda' : 'Selected Date'}
               </span>
               <h3 className="text-lg font-bold text-white">
                 {formatReadableDate(selectedDate)}
               </h3>
             </div>
-            <button
-              onClick={() => {
-                sound.playClick();
-                onAddTaskOnDate(selectedDate);
-              }}
-              className="p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow-md transition-all"
-              title="Add task on this date"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
+            <div className="flex items-center space-x-1.5">
+              {onOpenReplicateModal && selectedDateTasks.length > 0 && (
+                <button
+                  onClick={() => {
+                    sound.playClick();
+                    onOpenReplicateModal(selectedDate);
+                  }}
+                  className="p-2 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/30 rounded-xl transition-all"
+                  title="Replicate this day's routine to another day"
+                >
+                  <Repeat className="w-4 h-4" />
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  sound.playClick();
+                  onAddTaskOnDate(selectedDate);
+                }}
+                className="p-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded-xl shadow-md transition-all"
+                title="Add task on this date"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* Quick status bar */}
@@ -329,6 +349,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   onEdit={onEdit}
                   onDelete={onDelete}
                   onToggleSubtask={onToggleSubtask}
+                  onDuplicate={onDuplicateTask}
                 />
               ))
             )}
