@@ -11,7 +11,7 @@ import {
   DownloadCloud, 
   Volume2, 
   VolumeX, 
-  Box, 
+  Sparkles, 
   Layers 
 } from 'lucide-react';
 import { ViewMode, UserProfile, Task } from '../types';
@@ -66,7 +66,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full glass-panel border-b border-slate-800/80 px-4 sm:px-8 py-3.5 shadow-2xl backdrop-blur-2xl">
+    <header className="sticky top-0 z-40 w-full glass-panel border-b border-emerald-950/40 px-4 sm:px-8 py-3.5 shadow-2xl backdrop-blur-2xl">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Brand Logo with 3D Hologram styling */}
         <div 
@@ -76,26 +76,26 @@ export const Navbar: React.FC<NavbarProps> = ({
           }}
           className="flex items-center space-x-3 cursor-pointer group flex-shrink-0"
         >
-          <div className="relative w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-[1.5px] shadow-lg shadow-indigo-600/30 group-hover:shadow-indigo-500/50 transition-all duration-300 group-hover:scale-105">
-            <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-              <Box className="w-5 h-5 text-cyan-300 group-hover:rotate-12 transition-transform duration-300" />
+          <div className="relative w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-emerald-400 to-teal-300 p-[1.5px] shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 transition-all duration-300 group-hover:scale-105">
+            <div className="w-full h-full bg-[#0a0f0d] rounded-[14px] flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-emerald-400 group-hover:rotate-12 transition-transform duration-300" />
             </div>
           </div>
           <div className="hidden sm:block">
             <div className="flex items-center space-x-1.5">
-              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-indigo-100 to-cyan-300 bg-clip-text text-transparent font-['Outfit',sans-serif]">
+              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-emerald-100 to-teal-300 bg-clip-text text-transparent font-['Outfit',sans-serif]">
                 ChronoTask
               </span>
-              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-                3D
+              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                PRO
               </span>
             </div>
-            <p className="text-[10px] text-slate-400 font-medium">Daily Tracker & Manager</p>
+            <p className="text-[10px] text-slate-400 font-medium">Daily Routine & Habit Tracker</p>
           </div>
         </div>
 
         {/* View Tabs */}
-        <nav className="hidden md:flex items-center bg-slate-900/90 p-1 rounded-2xl border border-slate-800/90 shadow-inner">
+        <nav className="hidden md:flex items-center bg-[#0a120e]/90 p-1 rounded-2xl border border-emerald-950/60 shadow-inner">
           {navItems.map((item) => {
             const isActive = currentView === item.id;
             return (
@@ -107,8 +107,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }}
                 className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
                   isActive
-                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
-                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60'
+                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-slate-950 font-extrabold shadow-md shadow-emerald-600/20'
+                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
                 }`}
               >
                 {item.icon}
@@ -126,7 +126,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search tasks (Ctrl+K)..."
-            className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-9 pr-8 py-2 text-xs focus:outline-none focus:border-indigo-500 text-white placeholder-slate-500 transition-colors"
+            className="w-full bg-[#0a120e]/90 border border-slate-700/80 rounded-xl pl-9 pr-8 py-2 text-xs focus:outline-none focus:border-emerald-500 text-white placeholder-slate-500 transition-colors"
           />
           {searchQuery && (
             <button
@@ -146,7 +146,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               sound.playClick();
               onOpenNewTask();
             }}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 hover:shadow-indigo-500/50 flex items-center space-x-1.5 transition-all hover:scale-105 active:scale-95"
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 text-xs font-extrabold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 flex items-center space-x-1.5 transition-all hover:scale-105 active:scale-95"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
             <span className="hidden sm:inline">New Task</span>
@@ -160,7 +160,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             }}
             className={`p-2 rounded-xl border transition-all ${
               show3D
-                ? 'bg-indigo-600/20 border-indigo-500/40 text-cyan-300 shadow-md shadow-indigo-500/20'
+                ? 'bg-emerald-600/20 border-emerald-500/40 text-emerald-300 shadow-md shadow-emerald-500/20'
                 : 'bg-slate-900/80 border-slate-800 text-slate-500 hover:text-slate-300'
             }`}
             title={show3D ? 'Disable 3D Background' : 'Enable 3D Background'}
@@ -178,7 +178,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             title={soundEnabled ? 'Mute Sound Effects' : 'Unmute Sound Effects'}
           >
             {soundEnabled ? (
-              <Volume2 className="w-4 h-4 text-indigo-400" />
+              <Volume2 className="w-4 h-4 text-emerald-400" />
             ) : (
               <VolumeX className="w-4 h-4 text-slate-500" />
             )}
@@ -213,7 +213,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
-          {/* User Profile Avatar */}
+          {/* User Profile Avatar & Name */}
           <div
             onClick={() => {
               sound.playClick();
@@ -224,8 +224,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             <img
               src={currentUser.avatar}
               alt={currentUser.name}
-              className="w-9 h-9 rounded-xl object-cover border-2 border-indigo-500/50 group-hover:border-cyan-400 transition-all shadow-md"
+              className="w-9 h-9 rounded-xl object-cover border-2 border-emerald-500/50 group-hover:border-emerald-300 transition-all shadow-md"
             />
+            <span className="hidden xl:inline text-xs font-semibold text-slate-300 group-hover:text-emerald-300">
+              {currentUser.name}
+            </span>
           </div>
         </div>
       </div>
@@ -242,7 +245,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onSelectView(item.id);
               }}
               className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold ${
-                isActive ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+                isActive ? 'bg-emerald-600 text-white font-bold' : 'text-slate-400 hover:text-white'
               }`}
             >
               {item.icon}
