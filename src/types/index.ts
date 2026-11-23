@@ -2,6 +2,8 @@ export type Priority = 'low' | 'medium' | 'high' | 'urgent';
 
 export type Category = 'work' | 'personal' | 'fitness' | 'study' | 'finance' | 'creative';
 
+export type ColorTheme = 'emerald' | 'violet' | 'amber' | 'rose';
+
 export interface Subtask {
   id: string;
   title: string;
@@ -32,14 +34,20 @@ export interface UserProfile {
   soundEnabled: boolean;
   notificationsEnabled: boolean;
   theme: 'dark' | 'light' | 'cyber';
+  colorTheme: ColorTheme;
+  isGuest?: boolean;
+}
+
+export interface StoredUserAccount extends UserProfile {
+  password: string; // simple local hashed or plain string for local authentication
 }
 
 export type ViewMode = 'dashboard' | 'calendar' | 'history' | 'analytics';
 
 export interface FilterOptions {
   search: string;
-  category: string; // 'all' or specific Category
-  priority: string; // 'all' or specific Priority
+  category: string;
+  priority: string;
   status: 'all' | 'pending' | 'completed' | 'overdue';
   sortBy: 'dueDate' | 'priority' | 'createdAt' | 'title';
   sortOrder: 'asc' | 'desc';
